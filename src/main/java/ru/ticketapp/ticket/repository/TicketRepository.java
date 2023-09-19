@@ -53,6 +53,7 @@ public class TicketRepository {
 
         var records = dsl.fetch(TICKETS,
                 TICKETS.DATE_TIME.eq(date),
+                TICKETS.STATUS.isFalse(),
                 TICKETS.ID.greaterOrEqual(page.getOffset())
         ).sortDesc(TICKETS.DATE_TIME);
 
@@ -61,7 +62,10 @@ public class TicketRepository {
 
     public List<Ticket> getAllByRouteIdIn(List<Long> routeIds) {
 
-        var records = dsl.fetch(TICKETS, TICKETS.ID.in(routeIds)).sortAsc(TICKETS.DATE_TIME);
+        var records = dsl.fetch(TICKETS,
+                TICKETS.STATUS.isFalse(),
+                TICKETS.ID.in(routeIds)
+        ).sortAsc(TICKETS.DATE_TIME);
 
         return records.map(ticketRecordMapper::map);
     }
@@ -69,6 +73,10 @@ public class TicketRepository {
     public Integer buy(Long ownerId, Long ticketId) {
 
         var record = dsl.fetchOne(TICKETS, TICKETS.ID.eq(ticketId), TICKETS.STATUS.eq(FALSE));
+
+        if (record == null) {
+            return -1;
+        }
 
         record.setOwnerId(ownerId);
 

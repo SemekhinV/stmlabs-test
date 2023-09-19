@@ -45,12 +45,7 @@ public class UserServiceImpl implements  UserService{
 
         } catch (DataIntegrityViolationException e) {
 
-            if (e.getCause() instanceof ConstraintViolationException) {
-
-                throw new LoginException("Пользователь с логином " + user.getLogin() + " уже существует.");
-            }
-
-            throw new InvalidValueException(e.getMessage());
+            throw new InvalidValueException("Пользователь с логином " + user.getLogin() + " уже существует.");
         }
     }
 

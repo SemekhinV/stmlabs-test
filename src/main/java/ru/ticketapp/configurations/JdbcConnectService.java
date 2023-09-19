@@ -1,4 +1,4 @@
-package ru.ticketapp.connections;
+package ru.ticketapp.configurations;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;

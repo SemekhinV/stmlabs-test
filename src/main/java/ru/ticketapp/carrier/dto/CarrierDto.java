@@ -1,5 +1,6 @@
 package ru.ticketapp.carrier.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,13 +13,15 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Schema(description = "Carrier entity")
 public class CarrierDto {
 
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     Long id;
 
-    @NotNull(message = "Название компании перевозчика не может быть пустым.")
+    @Schema(description = "Name of carrier company")
     String name;
 
-    @NotNull(message = "Необходимо указать телефонный номер компании перевозчика.")
+    @Schema(description = "Phone number of carrier company")
     String phoneNumber;
 }

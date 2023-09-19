@@ -51,5 +51,4 @@ public class ErrorController {
         log.error("Ошибка валидации: ".concat(e.getMessage()));
         return new ErrorResponse(e.getMessage());
     }
-
 }

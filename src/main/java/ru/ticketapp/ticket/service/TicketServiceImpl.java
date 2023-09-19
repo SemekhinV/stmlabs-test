@@ -184,7 +184,9 @@ public class TicketServiceImpl implements TicketService {
 
         int status = ticketRepository.buy(ownerId, ticketId);
 
-        if (status != 2) {
+        System.out.println(status);
+
+        if (status != 1) {
             throw new InvalidValueException("Ошибка покупки вещи");
         }
 

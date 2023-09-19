@@ -1,5 +1,8 @@
 package ru.ticketapp.ticket.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/tickets")
+@Tag(name = "Ticket Controller", description = "Controller for creating, searching and purchasing new tickets")
 public class TicketController {
 
 
@@ -26,24 +30,37 @@ public class TicketController {
 
     private static final String USER_ID_ERROR = "Передано пустое значение id покупателя.";
 
+    @Operation(
+            summary = "Create new ticket"
+    )
     @PostMapping()
-    public TicketDtoFromRequest addTicket(@RequestBody TicketDtoFromRequest ticket) {
+    public TicketDtoFromRequest addTicket(
+            @RequestBody @Parameter(description = "Ticket data") TicketDtoFromRequest ticket
+    ) {
 
         return ticketService.save(ticket);
     }
 
+    @Operation(
+            summary = "Get ticket",
+            description = "Getting data of current ticket by id"
+    )
     @GetMapping("/{ticketId}")
     public TicketDtoToResponse getTicket(@PathVariable @NotNull(message = TICKET_ID_ERROR) Long ticketId) {
 
         return ticketService.get(ticketId);
     }
 
+    @Operation(
+            summary = "Search by date",
+            description = "Obtaining a list of tickets filtered by date"
+    )
     @GetMapping("/search/date")
     public List<TicketDtoToResponse> searchTicketsByData(
             @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId,
-            @RequestParam(required = false) LocalDateTime date,
-            @RequestParam(required = false) Integer from,
-            @RequestParam(required = false) Integer size
+            @RequestParam(required = false) @Parameter(description = "Ticket create data for search") LocalDateTime date,
+            @RequestParam(required = false) @Parameter(description = "Ticket id to get from") Integer from,
+            @RequestParam(required = false) @Parameter(description = "Size of page of tickets") Integer size
     ) {
 
         return ticketService.getAllTicketsByDate(
@@ -51,12 +68,16 @@ public class TicketController {
         );
     }
 
+    @Operation(
+            summary = "Search by point",
+            description = "Obtaining a list of tickets filtered by point departure/destination"
+    )
     @GetMapping("/search/point")
     public List<TicketDtoToResponse> searchTicketsByPoint(
             @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId,
-            @RequestParam(required = false) String points,
-            @RequestParam(required = false) Integer from,
-            @RequestParam(required = false) Integer size
+            @RequestParam(required = false) @Parameter(description = "Ticket departure/destination point for search") String points,
+            @RequestParam(required = false) @Parameter(description = "Ticket id to get from") Integer from,
+            @RequestParam(required = false) @Parameter(description = "Size of page of tickets") Integer size
     ) {
 
         return ticketService.getAllTicketsByPoint(
@@ -64,12 +85,16 @@ public class TicketController {
         );
     }
 
+    @Operation(
+            summary = "Search by carrier name",
+            description = "Obtaining a list of tickets filtered by carrier name"
+    )
     @GetMapping("/search/carrier")
     public List<TicketDtoToResponse> searchTicketsByCarrierName(
             @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId,
-            @RequestParam(required = false) String carrierName,
-            @RequestParam(required = false) Integer from,
-            @RequestParam(required = false) Integer size
+            @RequestParam(required = false) @Parameter(description = "Ticket carrier name for search") String carrierName,
+            @RequestParam(required = false) @Parameter(description = "Ticket id to get from") Integer from,
+            @RequestParam(required = false) @Parameter(description = "Size of page of tickets") Integer size
     ) {
 
         return ticketService.getAllTicketsByCarrierName(
@@ -77,11 +102,29 @@ public class TicketController {
         );
     }
 
+    @Operation(
+            summary = "Get all user tickets",
+            description = "Obtaining a list of tickets filtered by owner id and purchase status TRUE"
+    )
     @GetMapping("/search/owner")
     public List<TicketDtoToResponse> getAllTicketByOwner(
             @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long ownerId
     ) {
 
         return ticketService.getAllByOwnerId(ownerId);
+    }
+
+    @Operation(
+            summary = "Buy ticket",
+            description = "Purchase of ticket with id = itemId by user with id = userId " +
+                    "(user must be registered in the system for successful purchase)"
+    )
+    @GetMapping("/buy/{ticketId}")
+    public String buyTicket(
+            @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId,
+            @PathVariable @NotNull(message = TICKET_ID_ERROR) Long ticketId
+    ) {
+
+        return ticketService.buy(userId, ticketId);
     }
 }

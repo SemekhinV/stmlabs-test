@@ -1,5 +1,8 @@
 package ru.ticketapp.route.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.ticketapp.route.dto.RouteDtoFromRequest;
@@ -11,6 +14,7 @@ import javax.validation.constraints.NotNull;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/routes")
+@Tag(name = "Route controller", description = "controller for creating new routes (created for testing the application)")
 public class RouteController {
 
     private final RouteService routeService;
@@ -21,15 +25,22 @@ public class RouteController {
 
     private static final String USER_ID_ERROR = "Передано пустое значение id пользователя";
 
+    @Operation(
+            summary = "Create new route"
+    )
     @PostMapping()
     public RouteDtoFromRequest addRoute(
-            @RequestBody RouteDtoFromRequest routeDtoToResponse,
+            @RequestBody @Parameter(description = "Route data") RouteDtoFromRequest routeDtoToResponse,
             @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId
     ) {
 
         return routeService.save(routeDtoToResponse);
     }
 
+    @Operation(
+            summary = "Get route",
+            description = "Getting data of current route by id"
+    )
     @GetMapping("/{routeId}")
     public RouteDtoToResponse getRoute(@PathVariable @NotNull(message = ROUTE_ID_ERROR) Long routeId) {
 
