@@ -64,7 +64,7 @@ public class TicketController {
         );
     }
 
-    @GetMapping("/search/carrier_name")
+    @GetMapping("/search/carrier")
     public List<TicketDtoToResponse> searchTicketsByCarrierName(
             @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId,
             @RequestParam(required = false) String carrierName,
@@ -75,5 +75,13 @@ public class TicketController {
         return ticketService.getAllTicketsByCarrierName(
                 userId, carrierName, PageableImpl.of(from, size, Sort.by("dateTime").descending())
         );
+    }
+
+    @GetMapping("/search/owner")
+    public List<TicketDtoToResponse> getAllTicketByOwner(
+            @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long ownerId
+    ) {
+
+        return ticketService.getAllByOwnerId(ownerId);
     }
 }

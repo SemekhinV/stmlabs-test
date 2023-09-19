@@ -2,8 +2,8 @@ package ru.ticketapp.route.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.ticketapp.carrier.dto.CarrierDto;
 import ru.ticketapp.carrier.service.CarrierService;
 import ru.ticketapp.exception.validation.BadInputParametersException;
 import ru.ticketapp.exception.validation.EntityNotFoundException;
@@ -100,9 +100,9 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public List<RouteDtoToResponse> getAllByCarrierIdIn(List<Long> carrierIds) {
+    public List<RouteDtoToResponse> getAllByCarrierIdIn(List<Long> carrierIds, PageRequest page) {
 
-        return routeRepository.getAlByCarrierIdIn(carrierIds)
+        return routeRepository.getAlByCarrierIdIn(carrierIds, page)
                 .stream()
                 .filter(Objects::nonNull)
                 .map(RouteMapper::toRouteDto)

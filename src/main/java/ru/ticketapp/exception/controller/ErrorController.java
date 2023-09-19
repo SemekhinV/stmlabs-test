@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.ticketapp.exception.validation.BadInputParametersException;
-import ru.ticketapp.exception.validation.LoginException;
 import ru.ticketapp.exception.validation.EntityNotFoundException;
 import ru.ticketapp.exception.validation.InvalidValueException;
+import ru.ticketapp.exception.validation.LoginException;
 import ru.ticketapp.exception.validation.custom_response.ErrorResponse;
 
 import java.sql.SQLException;

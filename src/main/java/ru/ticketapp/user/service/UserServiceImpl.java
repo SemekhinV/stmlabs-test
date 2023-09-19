@@ -13,9 +13,6 @@ import ru.ticketapp.user.mapper.UserMapper;
 import ru.ticketapp.user.model.User;
 import ru.ticketapp.user.repository.UserRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static ru.ticketapp.user.mapper.UserMapper.toUserDto;
 
 

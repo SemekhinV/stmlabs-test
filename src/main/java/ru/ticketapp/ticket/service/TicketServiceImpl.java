@@ -156,10 +156,11 @@ public class TicketServiceImpl implements TicketService {
 
             tickets = ticketRepository.getAllByRouteIdIn(
                     routeService.getAllByCarrierIdIn(
-                            carrierService.getAllByName(carrierName)
+                            carrierService.getAllByName(carrierName, page)
                                     .stream()
                                     .map(CarrierDto::getId)
-                                    .collect(Collectors.toList()))
+                                    .collect(Collectors.toList()),
+                                    page)
                             .stream()
                             .map(RouteDtoToResponse::getId)
                             .collect(Collectors.toList()))
@@ -188,5 +189,28 @@ public class TicketServiceImpl implements TicketService {
         }
 
         return "Вещь успешно куплена.";
+    }
+
+    @Override
+    public List<TicketDtoToResponse> getAllByOwnerId(Long ownerId) {
+
+        userService.getUser(ownerId);
+
+        List<TicketDtoToResponse> tickets;
+
+        try {
+
+            tickets = ticketRepository.getAllByOwnerId(ownerId).stream()
+                    .map(TicketMapper::toTicketDto)
+                    .collect(Collectors.toList());
+
+        } catch (DataAccessException e) {
+
+            throw new BadInputParametersException("Неверные аргументы поиска билетов по имени перевозчика.");
+        }
+
+        tickets = tickets.stream().filter(Objects::nonNull).collect(Collectors.toList());
+
+        return tickets.isEmpty() ? List.of() : tickets;
     }
 }

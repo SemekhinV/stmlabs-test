@@ -20,4 +20,6 @@ public interface TicketService {
     List<TicketDtoToResponse> getAllTicketsByCarrierName(Long ownerId, String carrierName, PageRequest page);
 
     String buy(Long ownerId, Long ticketId);
+
+    List<TicketDtoToResponse> getAllByOwnerId(Long ownerId);
 }

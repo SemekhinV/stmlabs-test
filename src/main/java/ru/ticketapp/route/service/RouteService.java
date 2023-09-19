@@ -1,5 +1,6 @@
 package ru.ticketapp.route.service;
 
+import org.springframework.data.domain.PageRequest;
 import ru.ticketapp.route.dto.RouteDtoFromRequest;
 import ru.ticketapp.route.dto.RouteDtoToResponse;
 
@@ -17,5 +18,5 @@ public interface RouteService {
 
     List<RouteDtoToResponse> findRoutesByPoint(String search);
 
-    List<RouteDtoToResponse> getAllByCarrierIdIn(List<Long> carrierIds);
+    List<RouteDtoToResponse> getAllByCarrierIdIn(List<Long> carrierIds, PageRequest page);
 }

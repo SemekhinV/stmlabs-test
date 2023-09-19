@@ -1,11 +1,11 @@
 package ru.ticketapp.route.mapper;
 
-import ru.ticketapp.jooq.tables.records.RoutesRecord;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.MappingException;
 import org.jooq.DSLContext;
 import org.jooq.RecordUnmapper;
 import org.springframework.stereotype.Component;
+import ru.ticketapp.jooq.tables.records.RoutesRecord;
 import ru.ticketapp.route.model.Route;
 
 import static ru.ticketapp.jooq.tables.Routes.ROUTES;

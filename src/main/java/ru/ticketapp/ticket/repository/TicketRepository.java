@@ -1,13 +1,7 @@
 package ru.ticketapp.ticket.repository;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-import static ru.ticketapp.jooq.tables.Tickets.TICKETS;
-
-import ru.ticketapp.jooq.tables.records.TicketsRecord;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.exception.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import ru.ticketapp.ticket.mapper.TicketRecordMapper;
@@ -17,6 +11,11 @@ import ru.ticketapp.ticket.model.Ticket;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static ru.ticketapp.jooq.tables.Tickets.TICKETS;
 
 @Repository
 @RequiredArgsConstructor
@@ -39,14 +38,6 @@ public class TicketRepository {
                 .returning(TICKETS.ID)
                 .fetchOne()
                 .getId();
-
-//        return Optional.ofNullable(
-//                dsl.insertInto(TICKETS)
-//                        .set(ticketRecordUnmapper.unmap(ticket))
-//                        .returning()
-//                        .fetchOptional()
-//                        .orElseThrow(() -> new DataAccessException("Error inserting entity: " + ticket.getId()))
-//                        .into(Ticket.class));
     }
 
     public Ticket get(Long id) {
@@ -56,39 +47,23 @@ public class TicketRepository {
         );
 
         return ticketRecordMapper.map(records.get());
-//
-//        return Optional.of(dsl.selectFrom(TICKETS)
-//                .where(TICKETS.ID.eq(id))
-//                .fetchAny()
-//                .map(t -> ticketRecordMapper.map((TicketsRecord) t)));
     }
 
     public List<Ticket> searchByDate(LocalDateTime date, PageRequest page) {
 
-        var records = dsl.fetch(TICKETS, TICKETS.DATE_TIME.eq(date)).sortDesc(TICKETS.DATE_TIME);
+        var records = dsl.fetch(TICKETS,
+                TICKETS.DATE_TIME.eq(date),
+                TICKETS.ID.greaterOrEqual(page.getOffset())
+        ).sortDesc(TICKETS.DATE_TIME);
 
-        return records.map(ticketRecordMapper::map);
-
-//        return dsl.selectFrom(TICKETS)
-//                .where(TICKETS.DATE_TIME.eq(date))
-//                .orderBy(TICKETS.DATE_TIME.sortDesc())
-//                .offset(page.getOffset())
-//                .limit(page.getPageSize())
-//                .fetch()
-//                .map(t -> ticketRecordMapper.map(t));
+        return records.map(ticketRecordMapper::map).stream().limit(page.getPageSize()).collect(Collectors.toList());
     }
 
     public List<Ticket> getAllByRouteIdIn(List<Long> routeIds) {
 
-        var records = dsl.fetch(TICKETS, TICKETS.ID.in(routeIds)).sortAsc(TICKETS.ID);
+        var records = dsl.fetch(TICKETS, TICKETS.ID.in(routeIds)).sortAsc(TICKETS.DATE_TIME);
 
         return records.map(ticketRecordMapper::map);
-
-//        return dsl.selectFrom(TICKETS)
-//                .where(TICKETS.ROUTE_ID.in(routeIds))
-//                .orderBy(TICKETS.DATE_TIME.sortDesc())
-//                .fetch()
-//                .map(t -> ticketRecordMapper.map(t));
     }
 
     public Integer buy(Long ownerId, Long ticketId) {
@@ -100,15 +75,15 @@ public class TicketRepository {
         record.setStatus(TRUE);
 
         return record.store();
+    }
 
-//        return Optional.ofNullable(
-//                dsl.update(TICKETS)
-//                        .set(TICKETS.STATUS, TRUE)
-//                        .set(TICKETS.OWNER_ID, ownerId)
-//                        .where(TICKETS.ID.eq(ticketId), TICKETS.STATUS.eq(FALSE))
-//                        .returning()
-//                        .fetchOptional()
-//                        .orElseThrow(() -> new DataAccessException("Error updating entity: " + ticketId))
-//                        .into(Ticket.class));
+    public List<Ticket> getAllByOwnerId(Long ownerId) {
+
+        var records = dsl.fetch(TICKETS,
+                TICKETS.OWNER_ID.eq(ownerId),
+                TICKETS.STATUS.isTrue()
+        ).sortAsc(TICKETS.DATE_TIME);
+
+        return records.map(ticketRecordMapper::map);
     }
 }

@@ -3,7 +3,6 @@ package ru.ticketapp.user.repository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
-
 import ru.ticketapp.user.model.User;
 
 import java.util.List;
@@ -55,10 +54,5 @@ public class UserRepository {
                                 .login(record.getLogin())
                                 .password(record.getPassword())
                                 .build());
-
-//        return dsl.selectFrom(USERS)
-//                .where(USERS.LOGIN.eq(login))
-//                .fetch()
-//                .into(User.class);
     }
 }

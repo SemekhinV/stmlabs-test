@@ -1,11 +1,11 @@
 package ru.ticketapp.route.mapper;
 
-import ru.ticketapp.jooq.tables.records.RoutesRecord;
 import lombok.RequiredArgsConstructor;
 import org.jooq.RecordMapper;
 import org.springframework.stereotype.Component;
 import ru.ticketapp.carrier.model.Carrier;
 import ru.ticketapp.carrier.repository.CarrierRepository;
+import ru.ticketapp.jooq.tables.records.RoutesRecord;
 import ru.ticketapp.route.model.Route;
 
 @Component

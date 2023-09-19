@@ -2,6 +2,7 @@ package ru.ticketapp.carrier.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.ticketapp.carrier.dto.CarrierDto;
 import ru.ticketapp.carrier.mapper.CarrierMapper;
@@ -58,13 +59,13 @@ public class CarrierServiceImpl implements CarrierService {
     }
 
     @Override
-    public List<CarrierDto> getAllByName(String name) {
+    public List<CarrierDto> getAllByName(String name, PageRequest page) {
 
         List<CarrierDto> carriers;
 
         try {
 
-            carriers = carrierRepository.findAllByName(name)
+            carriers = carrierRepository.findAllByName(name, page)
                     .stream()
                     .map(CarrierMapper::toCarrierDto)
                     .collect(Collectors.toList());

@@ -2,9 +2,8 @@ package ru.ticketapp.user.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import ru.ticketapp.user.model.User;
 import ru.ticketapp.user.dto.UserDto;
+import ru.ticketapp.user.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
