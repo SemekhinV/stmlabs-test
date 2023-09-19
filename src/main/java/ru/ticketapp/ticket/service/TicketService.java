@@ -13,6 +13,10 @@ public interface TicketService {
 
     TicketDtoToResponse get(Long id);
 
+    String delete(Long ticketId, Long userId);
+
+    String update(TicketDtoFromRequest request, Long userId);
+
     List<TicketDtoToResponse> getAllTicketsByDate(Long ownerId, LocalDateTime dateToSearch, PageRequest page);
 
     List<TicketDtoToResponse> getAllTicketsByPoint(Long ownerId, String points, PageRequest page);

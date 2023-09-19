@@ -13,6 +13,7 @@ import ru.ticketapp.route.dto.RouteDtoToResponse;
 import ru.ticketapp.route.mapper.RouteMapper;
 import ru.ticketapp.route.model.Route;
 import ru.ticketapp.route.repository.RouteRepository;
+import ru.ticketapp.user.service.UserService;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 public class RouteServiceImpl implements RouteService {
 
     private final RouteRepository routeRepository;
+
+    private final UserService userService;
 
     private final CarrierService carrierService;
 
@@ -66,14 +69,25 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public RouteDtoToResponse update(RouteDtoFromRequest routeDtoToResponse) {
+    public String update(RouteDtoFromRequest route, Long userId) {
 
-        return null;
+        userService.checkRole(userId);
+
+        int answer = routeRepository.update(RouteMapper.toRoute(route));
+
+        return answer == 1 ? "Изменение данных маршрута успешно произведено" : "Ошибка изменения данных маршрута, " +
+                "сущность не найдена";
     }
 
     @Override
-    public void delete(Long id) {
+    public String delete(Long userId, Long routeId) {
 
+        userService.checkRole(userId);
+
+        int answer = routeRepository.delete(routeId);
+
+        return answer == 1 ? "Удаление маршрута произведено успешно" : "Ошибка удаления маршрута, " +
+                "сущность не найдена";
     }
 
     @Override

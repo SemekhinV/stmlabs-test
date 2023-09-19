@@ -85,6 +85,27 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public String update(TicketDtoFromRequest ticket, Long userId) {
+
+        userService.checkRole(userId);
+
+        int answer = ticketRepository.update(TicketMapper.toTicket(ticket));
+
+        return answer == 1? "Данные билета успешно изменены" : "Ошибка изменения билета, некорректные данные " +
+                "или сущность не найдена";
+    }
+
+    @Override
+    public String delete(Long ticketId, Long userId) {
+
+        userService.checkRole(userId);
+
+        int answer = ticketRepository.delete(ticketId);
+
+        return answer == 1 ? "Билет успешно удален" : "Ошибка удаления билета, сущность не найдена";
+    }
+
+    @Override
     public List<TicketDtoToResponse> getAllTicketsByDate(Long ownerId, LocalDateTime dateToSearch, PageRequest page) {
 
         if (dateToSearch != null && dateToSearch.isBefore(LocalDateTime.now())) {

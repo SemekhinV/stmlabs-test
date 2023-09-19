@@ -10,6 +10,7 @@ import ru.ticketapp.carrier.model.Carrier;
 import ru.ticketapp.carrier.repository.CarrierRepository;
 import ru.ticketapp.exception.validation.EntityNotFoundException;
 import ru.ticketapp.exception.validation.InvalidValueException;
+import ru.ticketapp.user.service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 public class CarrierServiceImpl implements CarrierService {
 
     private final CarrierRepository carrierRepository;
+
+    private final UserService userService;
 
     @Override
     public CarrierDto save(CarrierDto carrierDto) {
@@ -56,6 +59,28 @@ public class CarrierServiceImpl implements CarrierService {
         }
 
         return CarrierMapper.toCarrierDto(carrier);
+    }
+
+    @Override
+    public String update(CarrierDto carrier, Long userId) {
+
+        userService.checkRole(userId);
+
+        int answer = carrierRepository.update(CarrierMapper.toCarrier(carrier));
+
+        return answer == 1 ? "Обновление компании перевозчика произведено успешно" : "Ошибка обновления компании " +
+                "перевозчика, некорректные данные или сущность не найдена";
+    }
+
+    @Override
+    public String delete(Long userId, Long carrierId) {
+
+        userService.checkRole(userId);
+
+        int answer = carrierRepository.delete(carrierId);
+
+        return answer == 1 ? "Удаление компании перевозчика произведено успешно" : "Ошибка удаления компании " +
+                "перевозчика, сущность не найдена";
     }
 
     @Override

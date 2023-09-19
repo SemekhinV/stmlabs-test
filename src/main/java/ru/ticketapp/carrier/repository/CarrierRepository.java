@@ -58,6 +58,34 @@ public class CarrierRepository {
                 .orElse(null);
     }
 
+    public Integer update(Carrier carrier) {
+
+        var records = dsl.fetchOne(CARRIERS, CARRIERS.ID.eq(carrier.getId()));
+
+        if (records != null) {
+
+            records.setName(carrier.getName() == null ? records.getName() : carrier.getName());
+
+            records.setPhoneNumber(carrier.getPhoneNumber() == null ? records.getPhoneNumber() : carrier.getPhoneNumber());
+
+            return records.store();
+        }
+
+        return 0;
+    }
+
+    public Integer delete(Long id) {
+
+        var records = dsl.fetchOne(CARRIERS, CARRIERS.ID.eq(id));
+
+        if (records != null) {
+
+            return records.delete();
+        }
+
+        return 0;
+    }
+
     public List<Carrier> findAllByName(String name, PageRequest page) {
 
         var records = dsl.fetch(CARRIERS,

@@ -52,6 +52,32 @@ public class TicketController {
     }
 
     @Operation(
+            summary = "Update data of ticket",
+            description = "Updating data of ticket (only for ADMIN user group). Return status of operation or error."
+    )
+    @PatchMapping()
+    public String updateTicket(
+            @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId,
+            @RequestBody @Parameter(description = "Ticket data to update") TicketDtoFromRequest ticket
+    ) {
+
+        return ticketService.update(ticket, userId);
+    }
+
+    @Operation(
+            summary = "Delete ticket",
+            description = "Delete ticket (only for ADMIN user group). Return status of operation or error."
+    )
+    @DeleteMapping("/{ticketId}")
+    public String deleteTicket(
+            @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId,
+            @PathVariable @NotNull(message = TICKET_ID_ERROR) Long ticketId
+    ) {
+
+        return ticketService.delete(ticketId, userId);
+    }
+
+    @Operation(
             summary = "Search by date",
             description = "Obtaining a list of tickets filtered by date"
     )

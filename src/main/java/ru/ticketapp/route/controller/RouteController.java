@@ -46,4 +46,30 @@ public class RouteController {
 
         return routeService.get(routeId);
     }
+
+    @Operation(
+            summary = "Update data of route",
+            description = "Updating data of route (only for ADMIN user group). Return status of operation or error."
+    )
+    @PatchMapping()
+    public String updateRoute(
+            @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId,
+            @RequestBody @Parameter(description = "Route data to update") RouteDtoFromRequest route
+    ) {
+
+        return routeService.update(route, userId);
+    }
+
+    @Operation(
+            summary = "Delete route",
+            description = "Delete route (only for ADMIN user group). Return status of operation or error."
+    )
+    @DeleteMapping("/{routeId}")
+    public String deleteRoute(
+            @RequestHeader(value = USER_ID, required = false) @NotNull(message = USER_ID_ERROR) Long userId,
+            @PathVariable @NotNull(message = ROUTE_ID_ERROR) Long routeId
+    ) {
+
+        return routeService.delete(routeId, userId);
+    }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.RecordMapper;
 import org.springframework.stereotype.Component;
 import ru.ticketapp.jooq.tables.records.UsersRecord;
+import ru.ticketapp.user.model.Role;
 import ru.ticketapp.user.model.User;
 
 @Component
@@ -17,6 +18,7 @@ public class UserRecordMapper implements RecordMapper<UsersRecord, User> {
                 .id(record.getId())
                 .name(record.getName())
                 .login(record.getLogin())
+                .role(Role.valueOf(record.getRole()))
                 .build();
     }
 }

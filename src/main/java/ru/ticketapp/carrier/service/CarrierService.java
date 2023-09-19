@@ -13,5 +13,9 @@ public interface CarrierService {
 
     CarrierDto get(String name);
 
+    String update(CarrierDto carrier, Long userId);
+
+    String delete(Long userId, Long carrierId);
+
     List<CarrierDto> getAllByName(String name, PageRequest page);
 }

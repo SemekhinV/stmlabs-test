@@ -10,7 +10,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Users")
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
 
@@ -26,4 +28,7 @@ public class User {
 
     @Column(nullable = false)
     String password;
+
+    @Column(nullable = false)
+    Role role;
 }

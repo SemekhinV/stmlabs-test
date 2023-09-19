@@ -2,12 +2,11 @@ package ru.ticketapp.user.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.ticketapp.exception.validation.EntityNotFoundException;
 import ru.ticketapp.exception.validation.InvalidValueException;
-import ru.ticketapp.exception.validation.LoginException;
+import ru.ticketapp.exception.validation.PermissionDenied;
 import ru.ticketapp.user.dto.UserDto;
 import ru.ticketapp.user.mapper.UserMapper;
 import ru.ticketapp.user.model.User;
@@ -59,5 +58,26 @@ public class UserServiceImpl implements  UserService{
         }
 
         return toUserDto(user);
+    }
+
+    @Override
+    public User getUser(String login) {
+
+        User user = repository.get(login);
+
+        if (user == null) {
+            throw new EntityNotFoundException("Ошибка поиска пользователя, запись с login = " + login + " не найдена.");
+        }
+
+        return user;
+    }
+
+    @Override
+    public void checkRole(Long userId) {
+
+        if (repository.checkUserRole(userId) == -1L) {
+
+            throw new PermissionDenied("У данного пользователя нет доступа к выбранному методу.");
+        }
     }
 }

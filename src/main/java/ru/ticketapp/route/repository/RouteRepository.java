@@ -45,6 +45,41 @@ public class RouteRepository {
         return routeRecordMapper.map(records.get());
     }
 
+    public Integer update(Route route) {
+
+        var records = dsl.fetchOne(ROUTES, ROUTES.ID.eq(route.getId()));
+
+        if (records != null) {
+
+            records.setDeparturePoint(
+                    route.getDeparturePoint() == null ? records.getDeparturePoint() : route.getDeparturePoint());
+
+            records.setDestinationPoint(
+                    route.getDestinationPoint() == null ? records.getDestinationPoint() : route.getDestinationPoint());
+
+            records.setCarrierId(
+                    route.getCarrier() == null ? records.getCarrierId() : route.getCarrier().getId());
+
+            records.setDuration(route.getDuration() == null ? records.getDuration() : route.getDuration());
+
+            return records.store();
+        }
+
+        return 0;
+    }
+
+    public Integer delete(Long id) {
+
+        var records = dsl.fetchOne(ROUTES, ROUTES.ID.eq(id));
+
+        if (records != null) {
+
+            return records.delete();
+        }
+
+        return 0;
+    }
+
     public List<Route> getAllByPoint(String point) {
 
         var records = dsl.fetch(ROUTES,

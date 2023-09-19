@@ -12,9 +12,9 @@ public interface RouteService {
 
     RouteDtoToResponse get(Long id);
 
-    RouteDtoToResponse update(RouteDtoFromRequest routeDtoToResponse);
+    String update(RouteDtoFromRequest routeDtoToResponse, Long userId);
 
-    void delete(Long id);
+    String delete(Long userId, Long routeId);
 
     List<RouteDtoToResponse> findRoutesByPoint(String search);
 

@@ -3,6 +3,7 @@ package ru.ticketapp.user.repository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
+import ru.ticketapp.user.mapper.UserRecordMapper;
 import ru.ticketapp.user.model.User;
 
 import java.util.List;
@@ -16,12 +17,15 @@ public class UserRepository {
 
     private final DSLContext dsl;
 
+    private final UserRecordMapper userRecordMapper;
+
     public Long save(User user) {
 
         return dsl.insertInto(USERS)
                 .set(USERS.NAME, user.getName())
                 .set(USERS.LOGIN, user.getLogin())
                 .set(USERS.PASSWORD, user.getPassword())
+                .set(USERS.ROLE, user.getRole().name())
                 .returning(USERS.ID)
                 .fetchOne()
                 .getId();
@@ -33,26 +37,29 @@ public class UserRepository {
                 dsl.fetchOne(USERS, USERS.ID.eq(id))
         );
 
-        return records.map(
-                record -> User.builder()
-                        .id(record.getId())
-                        .name(record.getName())
-                        .login(record.getLogin())
-                        .password(record.getPassword())
-                        .build())
-                .orElse(null);
+        return records.map(userRecordMapper::map).orElse(null);
+    }
+
+    public User get(String login) {
+
+        var records = Optional.ofNullable(
+                dsl.fetchOne(USERS, USERS.LOGIN.eq(login))
+        );
+
+        return records.map(userRecordMapper::map).orElse(null);
     }
 
     public List<User> findByLogin(String login) {
 
         var records = dsl.fetch(USERS, USERS.LOGIN.contains(login)).sortAsc(USERS.ID);
 
-        return records.map(
-                        record -> User.builder()
-                                .id(record.getId())
-                                .name(record.getName())
-                                .login(record.getLogin())
-                                .password(record.getPassword())
-                                .build());
+        return records.map(userRecordMapper::map);
+    }
+
+    public Long checkUserRole(Long userId) {
+
+        var records = dsl.fetchOne(USERS, USERS.ID.eq(userId), USERS.ROLE.eq("ADMIN"));
+
+        return records == null ? -1L : 1L;
     }
 }

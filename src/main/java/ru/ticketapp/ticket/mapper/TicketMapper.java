@@ -79,7 +79,9 @@ public class TicketMapper {
         return Ticket
                 .builder()
                 .id(request.getId())
-                .owner(request.getOwnerId() == null ? null : new User(request.getOwnerId(), "", "", ""))
+                .owner(request.getOwnerId() == null ?
+                        null :
+                        new User(request.getOwnerId(), "", "", "", null))
                 .route(new Route(request.getRouteId(), "", "", null, null))
                 .dateTime(request.getDateTime())
                 .seatNumber(request.getSeatNumber())

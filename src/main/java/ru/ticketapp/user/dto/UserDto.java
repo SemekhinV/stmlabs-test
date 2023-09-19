@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import ru.ticketapp.user.model.Role;
 
 @Data
 @AllArgsConstructor
@@ -24,4 +25,7 @@ public class UserDto {
 
     @Schema(description = "User password")
     String password;
+
+    @Schema(description = "Role of user")
+    Role role;
 }

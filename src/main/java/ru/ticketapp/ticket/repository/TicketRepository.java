@@ -49,6 +49,46 @@ public class TicketRepository {
         return ticketRecordMapper.map(records.get());
     }
 
+    public Integer update(Ticket ticket) {
+
+        var records = dsl.fetchOne(TICKETS, TICKETS.ID.eq(ticket.getId()));
+
+        if (records != null) {
+
+            records.setOwnerId(
+                    ticket.getOwner() == null ? records.getOwnerId() : ticket.getOwner().getId());
+
+            records.setRouteId(
+                    ticket.getRoute() == null ? records.getRouteId() : ticket.getRoute().getId());
+
+            records.setDateTime(
+                    ticket.getDateTime() == null ? records.getDateTime() : ticket.getDateTime());
+
+            records.setSeatNumber(
+                    ticket.getSeatNumber() == null ? records.getSeatNumber() : ticket.getSeatNumber());
+
+            records.setPrice(ticket.getPrice() == null ? records.getPrice() : ticket.getPrice());
+
+            records.setStatus(ticket.getStatus() == null ? records.getStatus() : ticket.getStatus());
+
+            return records.store();
+        }
+
+        return 0;
+    }
+
+    public Integer delete(Long id) {
+
+        var records = dsl.fetchOne(TICKETS, TICKETS.ID.eq(id));
+
+        if (records != null) {
+
+            return records.delete();
+        }
+
+        return 0;
+    }
+
     public List<Ticket> searchByDate(LocalDateTime date, PageRequest page) {
 
         var records = dsl.fetch(TICKETS,

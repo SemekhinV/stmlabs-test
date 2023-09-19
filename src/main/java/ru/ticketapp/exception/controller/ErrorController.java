@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.ticketapp.exception.validation.BadInputParametersException;
-import ru.ticketapp.exception.validation.EntityNotFoundException;
-import ru.ticketapp.exception.validation.InvalidValueException;
-import ru.ticketapp.exception.validation.LoginException;
+import ru.ticketapp.exception.validation.*;
 import ru.ticketapp.exception.validation.custom_response.ErrorResponse;
 
 import java.sql.SQLException;
@@ -49,6 +46,13 @@ public class ErrorController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse sqlException(final SQLException e) {
         log.error("Ошибка валидации: ".concat(e.getMessage()));
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse permissionException(final PermissionDenied e) {
+        log.error("Ошибка доступа: ".concat(e.getMessage()));
         return new ErrorResponse(e.getMessage());
     }
 }
