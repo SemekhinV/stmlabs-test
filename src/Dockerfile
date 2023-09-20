@@ -6,7 +6,7 @@ RUN mvn -f /home/app/pom.xml clean install -P generated-jooq -Ddb.url=jdbc:postg
 #
 # Package stage
 #
-FROM openjdk:17.0.2-jdk-slim-buster
+FROM openjdk:14-ea-14-slim-buster
 COPY --from=build /home/app/target/STM-labs-1.0-SNAPSHOT.jar /usr/local/lib/STM-labs.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/usr/local/lib/STM-labs.jar"]
