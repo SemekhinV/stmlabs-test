@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:14.6-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=stmlabs
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      ticketapp_network:
+        ipv4_address: 192.168.12.6
+
+  ticketapp:
+    image: stmlabs
+    build:
+      context: .
+      dockerfile: ./src/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: 192.168.12.6
+      REDIS_PORT: 5432
+    depends_on:
+      - db
+    entrypoint: "./wait-for-it.sh 192.168.12.6:5432"
+    networks:
+      ticketapp_network:
+        ipv4_address: 192.168.12.5
+
+networks:
+    ticketapp_network:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 192.168.12.0/16
+            gateway: 192.168.12.1

@@ -16,8 +16,9 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
+        <java.version>14</java.version>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -168,6 +169,72 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>generate-jooq</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-codegen-maven</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <jdbc>
+                                        <driver>org.postgresql.Driver</driver>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <url>${db.url}</url>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <user>${db.user}</user>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <password>${db.password}</password>
+                                    </jdbc>
+                                    <generator>
+                                        <database>
+                                            <inputSchema>public</inputSchema>
+                                        </database>
+                                        <target>
+                                            <packageName>ru.ticketapp.jooq</packageName>
+                                            <directory>target/generated-sources</directory>
+                                        </target>
+
+                                    </generator>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>
+                                    <groupId>org.projectlombok</groupId>
+                                    <artifactId>lombok</artifactId>
+                                </exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>14</source>
+                            <target>14</target>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <resources>
             <resource>
@@ -194,40 +261,6 @@
                 <configuration>
                     <source>14</source>
                     <target>14</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jooq</groupId>
-                <artifactId>jooq-codegen-maven</artifactId>
-                <version>${jooq.version}</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jdbc>
-                        <driver>org.postgresql.Driver</driver>
-                        <url>jdbc:postgresql://localhost:5432/stmlabs</url>
-                        <user>postgres</user>
-                        <password>postgres</password>
-                    </jdbc>
-                    <generator>
-                        <database>
-                            <inputSchema>public</inputSchema>
-                        </database>
-                        <generate>
-                            <records>true</records>
-                        </generate>
-                        <target>
-                            <!-- структура пакетов относительно основной директории -->
-                            <packageName>ru.ticketapp.jooq</packageName>
-                            <directory>target/generated-sources</directory>
-                        </target>
-                    </generator>
                 </configuration>
             </plugin>
         </plugins>
